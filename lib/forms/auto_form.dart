@@ -105,7 +105,7 @@ class _Formulario extends StatelessWidget {
                 if (int.tryParse(value) == null) {
                   auto.anio = 0;
                 } else {
-                  auto.anio = value as int;
+                  auto.anio = int.parse(value);
                 }
               },
               keyboardType: TextInputType.number,
@@ -152,7 +152,7 @@ class _Formulario extends StatelessWidget {
                 if (int.tryParse(value) == null) {
                   auto.cilindraje = 0;
                 } else {
-                  auto.cilindraje = value as int;
+                  auto.cilindraje = int.parse(value);
                 }
               },
               keyboardType: TextInputType.number,

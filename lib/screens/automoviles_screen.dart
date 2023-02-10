@@ -51,9 +51,11 @@ class AutomovilesScreen extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: autoService.autos.length,
                   itemBuilder: (context, index) => GestureDetector(
-                    child: AutoCard(
-                      auto: autoService.autos[index],
-                    ),
+                    child: autoService.autos[index].estado
+                        ? AutoCard(
+                            auto: autoService.autos[index],
+                          )
+                        : Container(),
                     onTap: () {
                       autoService.selectedAuto =
                           autoService.autos[index].copy();

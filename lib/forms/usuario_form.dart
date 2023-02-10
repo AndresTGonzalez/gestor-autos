@@ -40,6 +40,7 @@ class _Formulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final registroForm = Provider.of<RegistroFormProvider>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
@@ -50,10 +51,10 @@ class _Formulario extends StatelessWidget {
             TextFormField(
               autocorrect: false,
               validator: (value) {
-                if (value != null && value.length >= 8) {
+                if (value != null && value.length >= 6) {
                   return null;
                 } else {
-                  return 'Contraseña mínima de 8 caracteres';
+                  return 'Contraseña mínima de 6 caracteres';
                 }
               },
               onChanged: (value) {
@@ -99,12 +100,17 @@ class _Formulario extends StatelessWidget {
               onPressed: () async {
                 final authService =
                     Provider.of<AuthService>(context, listen: false);
-                final String? resp = await authService.createUser(
-                    registroForm.email, registroForm.password);
+                final String? resp =
+                    await authService.changePassword(registroForm.password);
                 if (resp == null) {
-                  Navigator.pushReplacementNamed(context, 'home');
+                  // Navigator.pushReplacementNamed(context, 'home');
+                  authService.logout();
+                  Navigator.pushReplacementNamed(context, 'login');
+                  NotificationsService.showSnackBar('Vuelva a iniciar sesión');
                   registroForm.isLoading = false;
                 } else {
+                  NotificationsService.showSnackBar(resp);
+
                   print(resp);
                   // registroForm.isLoading = false;
                 }

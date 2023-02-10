@@ -71,6 +71,19 @@ class AutoService extends ChangeNotifier {
     return auto.id!;
   }
 
+  Future deleteAuto(Auto auto) async {
+    _isSaving = true;
+    notifyListeners();
+    const aux = 'https://app-moviles-1d98b-default-rtdb.firebaseio.com/autos';
+    final url = Uri.parse('$aux/${auto.id}.json');
+    final resp = await http.delete(url);
+    final decodedData = resp.body;
+    final index = this.autos.indexWhere((element) => element.id == auto.id);
+    autos.removeAt(index);
+    _isSaving = false;
+    notifyListeners();
+  }
+
   Future<String> createAuto(Auto auto) async {
     final url = Uri.parse(_urlBase);
     final resp = await http.post(url, body: auto.toJson());

@@ -88,7 +88,22 @@ class _AutoScreenBody extends StatelessWidget {
                       autoService.updateSelectedAutoImage(pickedFile.path);
                     },
                   ),
-                )
+                ),
+                Positioned(
+                  top: 60,
+                  right: 80,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      autoService.deleteAuto(auto);
+                      Navigator.of(context).popAndPushNamed('home');
+                    },
+                  ),
+                ),
               ],
             ),
             AutoForm(
@@ -109,6 +124,7 @@ class _AutoScreenBody extends StatelessWidget {
           final String? imageUrl = await autoService.uploadImage();
           if (imageUrl != null) autoForm.auto.imagen = imageUrl;
           await autoService.saveOrCreateAuto(autoForm.auto);
+          Navigator.of(context).popAndPushNamed('home');
         },
         backgroundColor: naranja,
         child: Icon(

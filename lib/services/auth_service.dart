@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService extends ChangeNotifier {
+  static String idToken = '';
   final String _urlBase = 'identitytoolkit.googleapis.com';
   final String _firebaseToken = 'AIzaSyC-_GnKVm5PTC5nkI0NQ6W7xsjVoztbjdM';
 
@@ -18,6 +19,26 @@ class AuthService extends ChangeNotifier {
     };
     final url =
         Uri.https(_urlBase, '/v1/accounts:signUp', {'key': _firebaseToken});
+    final resp = await http.post(url, body: jsonEncode(authData));
+    final Map<String, dynamic> decodedRes = jsonDecode(resp.body);
+    if (decodedRes.containsKey('idToken')) {
+      await storage.write(key: 'token', value: decodedRes['idToken']);
+      //TOKEN SECURE STROTAGE
+      idToken = decodedRes['idToken'];
+      // return decodedRes['idToken'];
+      return null;
+    } else {
+      return decodedRes['error']['message'];
+    }
+  }
+
+  Future<String?> changePassword(String password) async {
+    final Map<String, dynamic> authData = {
+      'idToken': idToken,
+      'password': password
+    };
+    final url =
+        Uri.https(_urlBase, '/v1/accounts:update', {'key': _firebaseToken});
     final resp = await http.post(url, body: jsonEncode(authData));
     final Map<String, dynamic> decodedRes = jsonDecode(resp.body);
     if (decodedRes.containsKey('idToken')) {
@@ -42,6 +63,7 @@ class AuthService extends ChangeNotifier {
     if (decodedRes.containsKey('idToken')) {
       //TOKEN SECURE STROTAGE
       // return decodedRes['idToken'];
+      idToken = decodedRes['idToken'];
       await storage.write(key: 'token', value: decodedRes['idToken']);
       return null;
     } else {
